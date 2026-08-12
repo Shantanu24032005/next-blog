@@ -37,11 +37,10 @@ export async function POST(req: Request) {
     const devtoResult = getResult(results[1]);
     const tumblrResult = getResult(results[2]);
 
-    // Save strictly to Firebase
     const blogDoc = {
       title,
       bodyText,
-      imageUrl,
+      imageUrl, // Saved to Firebase
       bloggerUrl: bloggerResult.status === 'success' ? bloggerResult.url : bloggerResult.error,
       devtoUrl: devtoResult.status === 'success' ? devtoResult.url : devtoResult.error,
       tumblrUrl: tumblrResult.status === 'success' ? tumblrResult.url : tumblrResult.error,

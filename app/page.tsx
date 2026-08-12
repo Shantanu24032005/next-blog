@@ -8,6 +8,7 @@ interface Blog {
   id: string;
   title: string;
   bodyText?: string;
+  imageUrl?: string | null;
   bloggerUrl?: string;
   devtoUrl?: string;
   tumblrUrl?: string;
@@ -17,6 +18,7 @@ interface Blog {
 export default function BlogManager() {
   const [title, setTitle] = useState<string>('');
   const [bodyText, setBodyText] = useState<string>('');
+  const [image, setImage] = useState<File | null>(null);
   const [aiPrompt, setAiPrompt] = useState<string>('');
   const [rawJsonOutput, setRawJsonOutput] = useState<string>('');
   
@@ -82,6 +84,7 @@ export default function BlogManager() {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('bodyText', bodyText);
+    if (image) formData.append('image', image);
 
     try {
       const res = await fetch('/api/publish', {
@@ -96,6 +99,7 @@ export default function BlogManager() {
         setBodyText('');
         setAiPrompt('');
         setRawJsonOutput('');
+        setImage(null);
         fetchBlogs();
       } else {
         setMessage(`Error: ${result.error}`);
@@ -156,6 +160,20 @@ export default function BlogManager() {
               </div>
 
               <div>
+                <label className="block text-sm font-medium mb-1">Cover Image</label>
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      setImage(e.target.files[0]);
+                    }
+                  }}
+                  className="w-full p-2 border rounded" 
+                />
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium mb-1">Content (Markdown for Cross-Posting)</label>
                 <textarea 
                   rows={10}
@@ -210,6 +228,9 @@ export default function BlogManager() {
             ) : (
               blogs.map((blog) => (
                 <div key={blog.id} className="border-b pb-4">
+                  {blog.imageUrl && (
+                    <img src={blog.imageUrl} alt={blog.title} className="w-full h-40 object-cover rounded mb-3" />
+                  )}
                   <h3 className="font-bold text-lg">{blog.title}</h3>
                   <p className="text-sm text-gray-500 mb-2">
                     {new Date(blog.publishedAt).toLocaleDateString()}
