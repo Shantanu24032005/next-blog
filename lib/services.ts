@@ -74,7 +74,8 @@ export const publishToTumblr = async (title: string, bodyText: string, imageUrl?
       state: 'published'
     });
 
-    return { action: "published", status: "success", url: `https://${TUMBLR_BLOG_IDENTIFIER}/post/${response.id}` };
+    // UPDATED: Added www.tumblr.com/ before the identifier
+    return { action: "published", status: "success", url: `https://www.tumblr.com/${TUMBLR_BLOG_IDENTIFIER}/post/${response.id}` };
   } catch (error: any) {
     throw new Error(`Tumblr Publish Failed: ${error.message}`);
   }
